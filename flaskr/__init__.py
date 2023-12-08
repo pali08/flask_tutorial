@@ -1,6 +1,8 @@
 import os
 from flask import Flask
 
+from flaskr.jinja_custom_filters import replace_whitespace
+
 
 def create_app(test_config=None):
     # create and configure app
@@ -40,4 +42,5 @@ def create_app(test_config=None):
     from . import blog
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index')
+    app.jinja_env.filters['replace_whitespace'] = replace_whitespace
     return app

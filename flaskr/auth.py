@@ -18,12 +18,15 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        password_confirm = request.form['password_confirm']
         db = get_db()
         error = None
         if not username:
             error = 'Username is required'
         elif not password:
             error = 'Password is required'
+        elif password != password_confirm:
+            error = 'Password does not match.'
         if error is None:
             try:
                 db.execute("INSERT INTO user (username, password) VALUES (?, ?)",

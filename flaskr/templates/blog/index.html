@@ -22,7 +22,7 @@
             {% if post['body'] | length < 50 %}
                 <p class="body">{{ shortened_body }}</p>
             {% else %}
-                <p class="body">{{ shortened_body | truncate(50) }}...</p>
+                <p class="body">{{ shortened_body | truncate(50) }}</p>
             {% endif %}
         </article>
         {% if not loop.last %}

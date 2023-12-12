@@ -4,5 +4,7 @@
   <h1>{% block title %}{{ post['title'] }}{% endblock %}</h1>
 {% endblock %}
 {% block content %}
-  <p>{{ post['body'] }}</p>
+    <article class="post">
+        <p class="body">{{ post['body'] }}</p>
+    </article>
 {% endblock %}

@@ -13,7 +13,8 @@ def test_index(client, auth):
     assert b'Log Out' in response.data
     assert b'test title' in response.data
     assert b'by test on 2018-01-01' in response.data
-    assert b'test\nbody' in response.data
+    # test body is only with space, because new lines are removed in preview
+    assert b'test body' in response.data
     assert b'href="/1/update"' in response.data
 
 
@@ -76,6 +77,13 @@ def test_create_update_validate(client, auth, path):
     auth.login()
     response = client.post(path, data={'title': '', 'body': ''})
     assert b'Title is required' in response.data
+
+
+def test_view(client, auth):
+    auth.login()
+    response = client.get('/1/view')
+    assert b'test title' in response.data
+    assert b'test\nbody' in response.data
 
 def test_delete(client, auth, app):
     auth.login()

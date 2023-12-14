@@ -7,4 +7,14 @@
     <article class="post">
         <p class="body">{{ post['body'] }}</p>
     </article>
+    <p>Likes: {{ post['likes'] }}</p>
+    {% if g.user['id'] %}
+        <form method="post">
+            {% if post_has_like_actual_user[0] == 1 %}
+                <input type="submit" value="Dislike">
+            {% else %}
+                <input type="submit" value="like">
+            {% endif %}
+        </form>
+    {% endif %}
 {% endblock %}

@@ -25,6 +25,7 @@
                 <p class="body">{{ shortened_body | truncate(50) }}</p>
             {% endif %}
         </article>
+        <p>Likes: {{ post['likes'] }}</p>
         {% if not loop.last %}
             <hr>
         {% endif %}

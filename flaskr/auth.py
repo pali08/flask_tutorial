@@ -45,6 +45,43 @@ def register():
     return render_template('auth/register.html')
 
 
+# toto je len dekorator. Zoberie fciu, ktoru obaluje a checkne, ci je uzivatel lognuty - inak ho vrati na login page
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+@bp.route('/user_settings', methods=('GET', 'POST'))
+@login_required
+def user_settings():
+    if request.method == 'POST':
+        password = request.form['password']
+        password_confirm = request.form['password_confirm']
+        db = get_db()
+        error = None
+        if not password:
+            error = 'Password is required'
+        elif password != password_confirm:
+            error = 'Password does not match.'
+        if error is None:
+            db.execute("UPDATE user SET password = ? WHERE id = ?;",
+                       (generate_password_hash(password), g.user['id']
+                        )
+                       )
+            db.commit()
+            # if no exception occured
+            session.clear()
+            return redirect(url_for("auth.login"))
+        # flash stores messages that can be retrieved when rendering template
+        flash(error)
+    return render_template('auth/user_settings.html')
+
+
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
@@ -87,12 +124,3 @@ def logout():
     return redirect(url_for('index'))
 
 
-# toto je len dekorator. Zoberie fciu, ktoru obaluje a checkne, ci je uzivatel lognuty - inak ho vrati na login page
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-        return view(**kwargs)
-
-    return wrapped_view

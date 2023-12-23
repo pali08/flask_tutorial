@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{% block title %}Settings{% endblock %}</h1>
+{%endblock%}
+
+{% block content %}
+    <h2>Change password for user {{ g.user['username'] }}</h2>
+    <form method="post">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+        <label for="password_confirm">Confirm password</label>
+        <input type="password" name="password_confirm" id="password_confirm" required>
+        <input type="submit" value="Change password">
+    </form>
+{% endblock %}

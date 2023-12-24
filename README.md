@@ -1,6 +1,6 @@
 # Flask tutorial
 
-This is blog application flaskr inspired by flask tutorial https://flask.palletsprojects.com/en/3.0.x/tutorial/. It was made for purpose of study flask framework
+This is blog application Flaskr inspired by flask tutorial https://flask.palletsprojects.com/en/3.0.x/tutorial/. It was made for purpose of study flask framework
 
 ## Additional stuffs
 

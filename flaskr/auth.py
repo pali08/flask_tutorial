@@ -6,6 +6,16 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
 
+from flask_simple_captcha import CAPTCHA
+YOUR_CONFIG = {
+    'SECRET_CAPTCHA_KEY': 'LONG_KEY',
+    'CAPTCHA_LENGTH': 6,
+    'CAPTCHA_DIGITS': False,
+    'EXPIRE_SECONDS': 600,
+}
+SIMPLE_CAPTCHA = CAPTCHA(config=YOUR_CONFIG)
+CAPTCHA_TEST_MODE = True
+
 # create new blueprint named auth. __name__ is passed as second argument so bp knows, where it is defined
 # '/auth is URL prefix'
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -15,6 +25,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 # when flask receivers request to auth/register
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
+    new_captcha_dict = SIMPLE_CAPTCHA.create()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -27,6 +38,10 @@ def register():
             error = 'Password is required'
         elif password != password_confirm:
             error = 'Password does not match.'
+        c_hash = request.form.get('captcha-hash')
+        c_text = request.form.get('captcha-text')
+        if not SIMPLE_CAPTCHA.verify(c_text, c_hash):
+            error = 'Captcha verification failed'
         if error is None:
             try:
                 db.execute("INSERT INTO user (username, password) VALUES (?, ?)",
@@ -42,7 +57,7 @@ def register():
                 return redirect(url_for("auth.login"))
         # flash stores messages that can be retrieved when rendering template
         flash(error)
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', captcha=new_captcha_dict)
 
 
 # toto je len dekorator. Zoberie fciu, ktoru obaluje a checkne, ci je uzivatel lognuty - inak ho vrati na login page

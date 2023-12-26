@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 
+from flaskr.auth import SIMPLE_CAPTCHA
 from flaskr.jinja_custom_filters import replace_whitespace
 
 
@@ -43,4 +44,5 @@ def create_app(test_config=None):
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index')
     app.jinja_env.filters['replace_whitespace'] = replace_whitespace
+    app = SIMPLE_CAPTCHA.init_app(app)
     return app
